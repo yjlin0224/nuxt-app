@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // {
+    //   "name": "Launch Firefox",
+    //   "type": "firefox",
+    //   "request": "launch",
+    //   "preLaunchTask": "nuxt: dev",
+    //   "url": "http://localhost:3000",
+    //   "webRoot": "${workspaceFolder}/src",
+    //   "keepProfileChanges": true,
+    //   "reAttach": true,
+    //   "skipFiles": ["${workspaceFolder}/node_modules/**/*.js"]
+    // },
+    {
+      "name": "Launch Edge",
+      "type": "msedge",
+      "request": "launch",
+      "preLaunchTask": "nuxt: dev",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/src",
+      "userDataDir": false,
+      "port": 9222,
+      "runtimeArgs": ["--remote-debugging-port=9222"],
+      "skipFiles": ["${workspaceFolder}/node_modules/**/*.js"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    },
+    {
+      "name": "Launch Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "preLaunchTask": "nuxt: dev",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/src",
+      "userDataDir": false,
+      "port": 9222,
+      "runtimeArgs": ["--remote-debugging-port=9222"],
+      "skipFiles": ["${workspaceFolder}/node_modules/**/*.js"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    }
+  ]
+}

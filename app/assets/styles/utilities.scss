@@ -1,0 +1,15 @@
+@use "./variables";
+
+// https://tailwindcss.com/docs/font-family
+
+.font-sans {
+  font-family: variables.$sans-serif-font-family !important;
+}
+
+.font-serif {
+  font-family: variables.$serif-font-family !important;
+}
+
+.font-mono {
+  font-family: variables.$monospace-font-family !important;
+}

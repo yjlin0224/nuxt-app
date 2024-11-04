@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "firefox-devtools.vscode-firefox-debug",
+    "formulahendry.auto-complete-tag",
+    "lukas-tr.materialdesignicons-intellisense",
+    "streetsidesoftware.code-spell-checker",
+    "stylelint.vscode-stylelint",
+    "vue.volar"
+  ]
+}

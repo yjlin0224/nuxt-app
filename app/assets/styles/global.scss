@@ -1,0 +1,24 @@
+@use "./variables";
+
+input[type="password"] {
+  font-family: variables.$password-font-family;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: variables.$monospace-font-family;
+}
+
+html {
+  overflow-y: auto !important;
+}
+
+/* stylelint-disable selector-class-pattern */
+
+.v-btn__content {
+  width: 100%;
+}
+
+/* stylelint-enable selector-class-pattern */

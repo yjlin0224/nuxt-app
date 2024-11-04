@@ -1,0 +1,5 @@
+@use "./variables";
+@use "vuetify/settings" with (
+  $body-font-family: variables.$sans-serif-font-family,
+  $heading-font-family: variables.$sans-serif-font-family
+);

@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev",
+      "label": "nuxt: dev",
+      "isBackground": true,
+      "runOptions": {
+        "instanceLimit": 1
+      },
+      "presentation": {
+        "reveal": "never"
+      },
+      "problemMatcher": [
+        {
+          "base": "$tsc-watch",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "Nuxt\\s+\\d+\\.\\d+\\.\\d+\\s+with\\s+Nitro\\s+\\d+\\.\\d+\\.\\d+",
+            "endsPattern": "✔\\s+Nuxt\\s+Nitro\\s+server\\s+built\\s+in\\s+\\d+\\s+ms"
+          }
+        }
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
