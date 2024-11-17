@@ -2,12 +2,14 @@ version: 0.2
 language: en
 words:
   - argb
+  - composables
   - luxon
   - materialdesignicons
   - noto
   - nuxt
   - nuxtjs
   - pinia
+  - pocketbase
   - qkeu
   - remeda
   - sindresorhus

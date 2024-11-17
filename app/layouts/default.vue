@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ModalsContainer } from 'vue-final-modal'
 const { initializeTheme, isThemeInitialized } = useTheme()
 
 const appConfig = useAppConfig()
@@ -10,7 +11,7 @@ const pageTitle = computed(() =>
 )
 
 useHead({
-  meta: [{ property: "og:title", content: pageTitle.value }],
+  meta: [{ property: 'og:title', content: pageTitle.value }],
 })
 
 onMounted(() => {
@@ -20,13 +21,14 @@ onMounted(() => {
 
 <template>
   <VApp v-show="isThemeInitialized">
-    <VAppBar color="surface-variant" flat>
+    <VAppBar color="surface-variant" flat density="comfortable">
       <VAppBarNavIcon />
       <VAppBarTitle>{{ pageTitle }}</VAppBarTitle>
     </VAppBar>
     <VMain class="bg-surface-variant">
       <slot />
     </VMain>
+    <ModalsContainer />
   </VApp>
   <VProgressCircular
     v-if="!isThemeInitialized"

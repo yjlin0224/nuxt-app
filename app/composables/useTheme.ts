@@ -1,14 +1,14 @@
-import type { ActualThemeMode, ThemeScheme } from "@@/vuetify.config"
+import type { ActualThemeMode, ThemeScheme } from '@@/vuetify.config'
 
-import { ThemeMode, getVuetifyThemeLabel } from "@@/vuetify.config"
+import { ThemeMode, getVuetifyThemeLabel } from '@@/vuetify.config'
 
-export default () => {
+export default function useTheme() {
   const preferredColorScheme = usePreferredColorScheme()
-  const themeMode = useLocalStorage<ThemeMode>("theme.mode", ThemeMode.system)
-  const themeScheme = useLocalStorage<ThemeScheme>("theme.scheme", "purple")
+  const themeMode = useLocalStorage<ThemeMode>('theme.mode', ThemeMode.system)
+  const themeScheme = useLocalStorage<ThemeScheme>('theme.scheme', 'purple')
   const currentThemeMode = computed<ActualThemeMode>(() => {
     if (themeMode.value === ThemeMode.system) {
-      return preferredColorScheme.value === "dark" ? ThemeMode.dark : ThemeMode.light
+      return preferredColorScheme.value === 'dark' ? ThemeMode.dark : ThemeMode.light
     }
     return themeMode.value
   })
@@ -32,8 +32,6 @@ export default () => {
     const { $vuetify } = useNuxtApp()
     $vuetify.theme.global.name.value = vuetifyThemeLabel.value
     isThemeInitialized.value = true
-    console.log("Theme initialized")
-    console.log(isThemeInitialized.value)
   }
 
   return {

@@ -1,3 +1,3 @@
 export default defineAppConfig({
-  name: "Nuxt App",
+  name: 'Nuxt App',
 })

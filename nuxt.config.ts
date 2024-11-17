@@ -1,47 +1,47 @@
 export default defineNuxtConfig({
-  compatibilityDate: "2024-04-03",
+  compatibilityDate: '2024-04-03',
   future: {
     compatibilityVersion: 4,
   },
   modules: [
-    "@nuxt/content",
-    "@nuxt/eslint",
-    "@nuxtjs/google-fonts",
-    "@nuxtjs/stylelint-module",
-    "@pinia/nuxt",
-    "@vee-validate/nuxt",
-    "@vueuse/nuxt",
-    "vuetify-nuxt-module",
+    '@nuxt/content',
+    '@nuxt/eslint',
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/stylelint-module',
+    '@pinia/nuxt',
+    '@vee-validate/nuxt',
+    '@vueuse/nuxt',
+    'vuetify-nuxt-module',
   ],
   googleFonts: {
     families: {
-      "Roboto": {
+      'Roboto': {
         wght: [100, 300, 400, 500, 700, 900],
         ital: [100, 300, 400, 500, 700, 900],
       },
-      "Roboto Serif": {
+      'Roboto Serif': {
         wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
         ital: [100, 200, 300, 400, 500, 600, 700, 800, 900],
       },
-      "Roboto Mono": {
+      'Roboto Mono': {
         wght: [100, 200, 300, 400, 500, 600, 700],
         ital: [100, 200, 300, 400, 500, 600, 700],
       },
-      "Noto Sans": {
+      'Noto Sans': {
         wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
         ital: [100, 200, 300, 400, 500, 600, 700, 800, 900],
       },
-      "Noto Sans Mono": {
+      'Noto Sans Mono': {
         wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
       },
-      "Noto Sans TC": {
+      'Noto Sans TC': {
         wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
       },
-      "Noto Serif": {
+      'Noto Serif': {
         wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
         ital: [100, 200, 300, 400, 500, 600, 700, 800, 900],
       },
-      "Noto Serif TC": {
+      'Noto Serif TC': {
         wght: [200, 300, 400, 500, 600, 700, 800, 900],
       },
     },
@@ -49,19 +49,23 @@ export default defineNuxtConfig({
     useStylesheet: true,
     download: false,
   },
+  pinia: {
+    storesDirs: ['stores/**'],
+  },
   vuetify: {
     moduleOptions: {
       prefixComposables: true,
       styles: {
-        configFile: "assets/styles/vuetify.scss",
+        configFile: 'assets/styles/vuetify.scss',
       },
     },
-    vuetifyOptions: "vuetify.config.ts",
+    vuetifyOptions: 'vuetify.config.ts',
   },
+  css: ['vue-final-modal/style.css'],
   app: {
     head: {
       htmlAttrs: {
-        lang: "zh-Hant-TW", // remove when `i18n` module is used
+        lang: 'zh-Hant-TW', // remove when `i18n` module is used
       },
     },
   },
@@ -79,31 +83,41 @@ export default defineNuxtConfig({
       //   Temporarily resolved by manually creating an `import.d.ts` file,
       //   so `dtsDisabled` needs to be set to `true`.
       {
-        from: "@sindresorhus/is",
+        from: '@sindresorhus/is',
         dtsDisabled: true,
-        imports: [{ name: "default", as: "is" }],
+        imports: [{ name: 'default', as: 'is' }],
       },
       {
-        from: "yup",
+        from: '@sindresorhus/is',
         dtsDisabled: true,
-        imports: [{ name: "*", as: "yup" }],
+        imports: [{ name: 'assert', as: 'assert' }],
       },
       {
-        from: "remeda",
+        from: 'yup',
         dtsDisabled: true,
-        imports: [{ name: "*", as: "R" }],
+        imports: [{ name: '*', as: 'yup' }],
       },
       {
-        from: "luxon",
+        from: 'remeda',
+        dtsDisabled: true,
+        imports: [{ name: '*', as: 'R' }],
+      },
+      {
+        from: 'luxon',
         dtsDisabled: true,
         imports: [
-          { name: "DateTime" },
-          { name: "Zone" },
-          { name: "Duration" },
-          { name: "Interval" },
+          { name: 'DateTime' },
+          { name: 'Zone' },
+          { name: 'Duration' },
+          { name: 'Interval' },
         ],
       },
     ],
+  },
+  runtimeConfig: {
+    public: {
+      pocketbaseUrl: 'http://127.0.0.1:8090',
+    },
   },
   devtools: {
     enabled: true,
