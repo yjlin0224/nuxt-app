@@ -41,7 +41,7 @@ export default withNuxt(
           ],
           'pathGroups': [
             {
-              pattern: '@/**/*.vue',
+              pattern: '~/**/*.vue',
               group: 'internal',
               position: 'after',
             },

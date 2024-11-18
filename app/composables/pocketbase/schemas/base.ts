@@ -1,11 +1,5 @@
 import type { BaseModel } from 'pocketbase'
 
-type Branded<T> = T & { readonly $brand: unique symbol }
-type RemoveIndexSignature<T> = {
-  [K in keyof T as K extends `${infer S}` ? S : never]: T[K]
-}
-type StringEnumType<T extends string> = Record<string, T>
-
 export type RecordId = Branded<string>
 
 export type ConvertToType<T extends Record<string, unknown>, K extends keyof T, V> = Omit<T, K> & {
@@ -85,7 +79,7 @@ export function mayBeDuration(value: unknown): Duration | null {
 
 export function mustBeInterval(value: unknown): Interval {
   if (is.array(value) && value.length === 2) {
-    // TOOD: implement parsing ['YYYY-MM-DD', 'YYYY-MM-DD']
+    // TODO: implement parsing ['YYYY-MM-DD', 'YYYY-MM-DD']
     const [start, end] = value.map(mayBeDateTime)
     if (start?.isValid && end?.isValid) {
       const intervalFromArray = Interval.fromDateTimes(start, end)
@@ -93,7 +87,7 @@ export function mustBeInterval(value: unknown): Interval {
     }
   }
   if (is.nonEmptyStringAndNotWhitespace(value)) {
-    // TOOD: implement parsing 'YYYY-MM-DD'
+    // TODO: implement parsing 'YYYY-MM-DD'
     const intervalFromIso = Interval.fromISO(value)
     if (intervalFromIso.isValid) return intervalFromIso
   }

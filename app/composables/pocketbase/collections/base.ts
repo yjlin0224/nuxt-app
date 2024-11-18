@@ -1,3 +1,5 @@
+import type Pocketbase from 'pocketbase'
+
 import equal from 'fast-deep-equal'
 import {
   ClientResponseError,
@@ -7,7 +9,6 @@ import {
   type RecordListOptions,
   type RecordModel,
   type RecordOptions,
-  type RecordService,
   type SendOptions,
   type RecordSubscription as _RecordSubscription,
 } from 'pocketbase'
@@ -18,7 +19,7 @@ import {
   type DataColumnConverter,
   type RecordId,
   mustBeStringEnum,
-} from '@/composables/pocketbase/schemas/base'
+} from '~/composables/pocketbase/schemas/base'
 
 export type RecordSubscriptionTopic = RecordId | '*'
 export enum RecordSubscriptionAction {
@@ -31,11 +32,12 @@ export type RecordSubscription<T = RecordModel> = _RecordSubscription<T> & {
   record: T
 }
 
-export default function usePbCollectionBase<
+export default function usePocketbaseCollectionBase<
   TPayload extends BasePayload,
   TRecord extends BaseRecord,
 >(
-  service: RecordService<TPayload>,
+  database: Pocketbase,
+  serviceKey: string,
   dataColumnConverters: DataColumnConverter<
     // @ts-expect-error(2344): probably a bug in TypeScript
     keyof TPayload,
@@ -44,12 +46,15 @@ export default function usePbCollectionBase<
     unknown
   >[],
 ) {
+  const service = database.collection<TPayload>(serviceKey)
+
   const isSoftDeleteSupported = dataColumnConverters.some(
     ({ payloadKey, recordKey }) => payloadKey === 'deleted' && recordKey === 'deletedAt',
   )
 
   function convertPayloadToRecord(payload: TPayload): TRecord {
     return Object.entries(payload).reduce((record, [key, value]) => {
+      if (['collectionId', 'collectionName'].includes(key)) return record
       const { payloadToRecord } = dataColumnConverters.find(({ payloadKey }) => payloadKey === key)!
       return {
         ...record,
@@ -183,6 +188,7 @@ export default function usePbCollectionBase<
   return {
     isBase: true as const,
     isAuth: false,
+    database,
     service,
     dataColumnConverters,
     isSoftDeleteSupported,

@@ -1,36 +1,36 @@
-import type { ExamplePayload, ExampleRecord } from '@/composables/pocketbase/schemas/example'
-import type { UserPayload, UserRecord } from '@/composables/pocketbase/schemas/user'
+import type { ExamplePayload, ExampleRecord } from '~/composables/pocketbase/schemas/example'
+import type { UserPayload, UserRecord } from '~/composables/pocketbase/schemas/user'
 
 import Pocketbase from 'pocketbase'
 
-import usePocketbaseCollectionAuth from '@/composables/pocketbase/collections/auth'
-import usePocketbaseCollectionBase from '@/composables/pocketbase/collections/base'
-import { exampleDataColumnConverters } from '@/composables/pocketbase/schemas/example'
-import { userDataColumnConverters } from '@/composables/pocketbase/schemas/user'
+import usePocketbaseCollectionAuth from '~/composables/pocketbase/collections/auth'
+import usePocketbaseCollectionBase from '~/composables/pocketbase/collections/base'
+import { exampleDataColumnConverters } from '~/composables/pocketbase/schemas/example'
+import { userDataColumnConverters } from '~/composables/pocketbase/schemas/user'
 
-const runtimeConfig = useRuntimeConfig()
+let database: Pocketbase | null = null
 
-export const database = new Pocketbase(runtimeConfig.public.pocketbaseUrl)
-
-const pocketbaseServices = {
-  user: database.collection<UserPayload>('users'),
-  example: database.collection<ExamplePayload>('examples'),
+function getDatabase() {
+  if (!database) {
+    const runtimeConfig = useRuntimeConfig()
+    console.log('runtimeConfig.public.pocketbaseUrl', runtimeConfig.public.pocketbaseUrl)
+    database = new Pocketbase(runtimeConfig.public.pocketbaseUrl)
+    // database = new Pocketbase('http://localhost:8090')
+  }
+  return database
 }
 
 const usePocketbaseCollections = {
   user: () =>
     usePocketbaseCollectionAuth<UserPayload, UserRecord>(
-      pocketbaseServices.user,
-      userDataColumnConverters,
-    ),
-  baseUser: () =>
-    usePocketbaseCollectionBase<UserPayload, UserRecord>(
-      pocketbaseServices.example,
+      getDatabase(),
+      'users',
       userDataColumnConverters,
     ),
   example: () =>
     usePocketbaseCollectionBase<ExamplePayload, ExampleRecord>(
-      pocketbaseServices.example,
+      getDatabase(),
+      'examples',
       exampleDataColumnConverters,
     ),
 } as const

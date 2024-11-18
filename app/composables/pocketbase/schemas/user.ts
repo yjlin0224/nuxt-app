@@ -1,10 +1,10 @@
-import { type AuthPayload, authDataColumnConverters } from '@/composables/pocketbase/schemas/auth'
 import {
   type DataColumnConverter,
   type WithBasePayload,
   type WithBaseRecord,
   genericColumnConverter,
 } from '@/composables/pocketbase/schemas/base'
+import { type AuthPayload, authDataColumnConverters } from '~/composables/pocketbase/schemas/auth'
 
 export type UserPayload = WithBasePayload<
   AuthPayload & {
@@ -20,4 +20,8 @@ export const userDataColumnConverters: DataColumnConverter<
   keyof UserRecord,
   unknown,
   unknown
->[] = [...authDataColumnConverters, genericColumnConverter('name', 'name')]
+>[] = [
+  ...authDataColumnConverters,
+  genericColumnConverter('name', 'name'),
+  genericColumnConverter('avatar', 'avatar'),
+]

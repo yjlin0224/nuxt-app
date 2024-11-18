@@ -1,6 +1,6 @@
-import type { ActualThemeMode, ThemeScheme } from '@@/vuetify.config'
+import type { ActualThemeMode, ThemeScheme } from '~~/vuetify.config'
 
-import { ThemeMode, getVuetifyThemeLabel } from '@@/vuetify.config'
+import { ThemeMode, getVuetifyThemeLabel } from '~~/vuetify.config'
 
 export default function useTheme() {
   const preferredColorScheme = usePreferredColorScheme()

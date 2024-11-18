@@ -6,7 +6,7 @@ import {
   baseDataColumnConverters,
   genericColumnConverter,
   nullableStringColumnConverter,
-} from '@/composables/pocketbase/schemas/base'
+} from '~/composables/pocketbase/schemas/base'
 
 export type AuthPayload = WithBasePayload<{
   username: string

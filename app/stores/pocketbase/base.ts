@@ -1,6 +1,3 @@
-import type { PocketbaseSchemaKey } from '@/composables/pocketbase/collections'
-import type usePocketbaseBase from '@/composables/pocketbase/collections/base'
-import type { BasePayload, BaseRecord, RecordId } from '@/composables/pocketbase/schemas/base'
 import type {
   CommonOptions,
   ListResult,
@@ -9,12 +6,15 @@ import type {
   RecordOptions,
   SendOptions,
 } from 'pocketbase'
+import type { PocketbaseSchemaKey } from '~/composables/pocketbase/collections'
+import type usePocketbaseBase from '~/composables/pocketbase/collections/base'
+import type { BasePayload, BaseRecord, RecordId } from '~/composables/pocketbase/schemas/base'
 
-import usePocketbaseCollections from '@/composables/pocketbase/collections'
+import usePocketbaseCollections from '~/composables/pocketbase/collections'
 import {
   RecordSubscriptionAction,
   type RecordSubscriptionTopic,
-} from '@/composables/pocketbase/collections/base'
+} from '~/composables/pocketbase/collections/base'
 
 export default function pocketbaseBaseStoreDefiner<
   K extends PocketbaseSchemaKey,
@@ -22,9 +22,9 @@ export default function pocketbaseBaseStoreDefiner<
   TRecord extends BaseRecord,
   TPocketbase extends ReturnType<typeof usePocketbaseBase<TPayload, TRecord>>,
 >(schemaKey: K) {
-  const collection = usePocketbaseCollections[schemaKey]() as unknown as TPocketbase
-
   return defineStore(schemaKey, () => {
+    const collection = usePocketbaseCollections[schemaKey]() as unknown as TPocketbase
+
     const records: Ref<TRecord[]> = ref([])
     const recordMap = computed(() => new Map(records.value.map((record) => [record.id, record])))
     const subscribedTopics = ref<RecordSubscriptionTopic[]>([])

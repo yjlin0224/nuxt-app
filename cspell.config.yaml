@@ -2,19 +2,25 @@ version: 0.2
 language: en
 words:
   - argb
+  - authed
+  - auths
   - composables
+  - gitea
+  - gitee
+  - kakao
+  - livechat
   - luxon
-  - materialdesignicons
+  - mailcow
   - noto
   - nuxt
   - nuxtjs
   - pinia
+  - planningcenter
   - pocketbase
-  - qkeu
   - remeda
   - sindresorhus
+  - strava
   - unimport
   - vuetify
   - vueuse
   - wght
-  - yhhjzme

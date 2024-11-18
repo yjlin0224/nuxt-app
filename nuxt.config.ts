@@ -50,7 +50,7 @@ export default defineNuxtConfig({
     download: false,
   },
   pinia: {
-    storesDirs: ['stores/**'],
+    storesDirs: ['./stores/**'],
   },
   vuetify: {
     moduleOptions: {
@@ -61,7 +61,7 @@ export default defineNuxtConfig({
     },
     vuetifyOptions: 'vuetify.config.ts',
   },
-  css: ['vue-final-modal/style.css'],
+  css: ['vue-final-modal/style.css', '~/assets/styles/index.scss'],
   app: {
     head: {
       htmlAttrs: {
@@ -116,7 +116,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      pocketbaseUrl: 'http://127.0.0.1:8090',
+      pocketbaseUrl: 'http://localhost:8090',
     },
   },
   devtools: {

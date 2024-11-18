@@ -4,14 +4,17 @@ const { initializeTheme, isThemeInitialized } = useTheme()
 
 const appConfig = useAppConfig()
 const route = useRoute()
+
+const headTitle = computed(() =>
+  is.nonEmptyStringAndNotWhitespace(route.meta.title) ? route.meta.title : null,
+)
 const pageTitle = computed(() =>
-  is.nonEmptyStringAndNotWhitespace(route.meta.title)
-    ? `${appConfig.name} - ${route.meta.title}`
-    : (appConfig.name as string),
+  is.string(headTitle.value) ? `${appConfig.name} - ${headTitle.value}` : appConfig.name,
 )
 
 useHead({
-  meta: [{ property: 'og:title', content: pageTitle.value }],
+  title: headTitle,
+  meta: [{ property: 'og:title', content: pageTitle }],
 })
 
 onMounted(() => {

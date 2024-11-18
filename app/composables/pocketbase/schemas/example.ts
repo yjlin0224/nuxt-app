@@ -9,7 +9,7 @@ import {
   genericColumnConverter,
   multiSelectionFieldColumnConverter,
   singleSelectionFieldColumnConverter,
-} from '@/composables/pocketbase/schemas/base'
+} from '~/composables/pocketbase/schemas/base'
 
 export enum ExampleSelectionOption {
   OptionA = 'optionA',

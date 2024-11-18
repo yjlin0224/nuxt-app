@@ -2,7 +2,7 @@
 import {
   ConfirmDialogActions,
   ConfirmDialogType,
-} from '@/components/global/Modal/ConfirmDialog.vue'
+} from '~/components/global/Modal/ConfirmDialog.vue'
 
 async function open() {
   const confirmation = useConfirmation({

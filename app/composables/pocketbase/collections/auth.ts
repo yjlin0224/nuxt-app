@@ -1,17 +1,17 @@
-import type { AuthPayload, AuthRecord } from '@/composables/pocketbase/schemas/auth'
-import type { DataColumnConverter, RecordId } from '@/composables/pocketbase/schemas/base'
 import type {
   AuthMethodsList,
   CommonOptions,
   ExternalAuthModel,
   RecordAuthResponse,
   RecordOptions,
-  RecordService,
 } from 'pocketbase'
+import type Pocketbase from 'pocketbase'
+import type { AuthPayload, AuthRecord } from '~/composables/pocketbase/schemas/auth'
+import type { DataColumnConverter, RecordId } from '~/composables/pocketbase/schemas/base'
 
-import usePocketbaseCollectionBase from '@/composables/pocketbase/collections/base'
+import usePocketbaseCollectionBase from '~/composables/pocketbase/collections/base'
 
-type OAuth2Provider =
+export type OAuth2Provider =
   | 'apple'
   | 'bitbucket'
   | 'discord'
@@ -38,11 +38,12 @@ type OAuth2Provider =
   | 'vk'
   | 'yandex'
 
-export default function usePbCollectionAuth<
+export default function usePocketbaseCollectionAuth<
   TPayload extends AuthPayload,
   TRecord extends AuthRecord,
 >(
-  service: RecordService<TPayload>,
+  database: Pocketbase,
+  serviceKey: string,
   dataColumnConverters: DataColumnConverter<
     // @ts-expect-error(2344): probably a bug in TypeScript
     keyof TPayload,
@@ -51,7 +52,8 @@ export default function usePbCollectionAuth<
     unknown
   >[],
 ) {
-  const base = usePocketbaseCollectionBase(service, dataColumnConverters)
+  const base = usePocketbaseCollectionBase(database, serviceKey, dataColumnConverters)
+  const { service } = base
 
   async function authWithPassword(
     usernameOrEmail: string,

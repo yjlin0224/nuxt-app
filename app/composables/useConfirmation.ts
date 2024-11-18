@@ -3,7 +3,7 @@ import { useModal } from 'vue-final-modal'
 import type {
   ConfirmDialogAction,
   ConfirmDialogProps,
-} from '@/components/global/Modal/ConfirmDialog.vue'
+} from '~/components/global/Modal/ConfirmDialog.vue'
 
 import { ModalConfirmDialog } from '#components'
 
