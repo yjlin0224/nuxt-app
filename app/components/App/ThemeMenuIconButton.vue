@@ -43,8 +43,18 @@ const themeStore = useThemeStore()
 const buttonIcon = computed(() => themeModeIcons[themeStore.mode])
 const buttonAvatarColor = computed(
   () =>
-    `${R.toKebabCase(themeStore.currentColor)}-${themeStore.currentMode === ThemeMode.light ? 'lighten' : 'darken'}-3`,
+    `${R.toKebabCase(themeStore.currentColor)}-${
+      themeStore.currentMode === ThemeMode.light ? 'lighten' : 'darken'
+    }-3`,
 )
+
+function toggleThemeColor(color: ThemeColor, toggle: (() => void) | undefined) {
+  if (!is.function(toggle)) return
+  if (color === 'random') {
+    themeStore.setRandomColor()
+  }
+  toggle()
+}
 </script>
 
 <template>
@@ -55,7 +65,7 @@ const buttonAvatarColor = computed(
     <VMenu activator="parent" :close-on-content-click="false">
       <VCard>
         <div class="pa-2">
-          <VBtnToggle v-model="themeStore.mode" density="comfortable" variant="tonal">
+          <VBtnToggle v-model="themeStore.mode" mandatory density="comfortable" variant="tonal">
             <VBtn v-for="(mode, i) in themeModes" :key="i" :value="mode">
               <VIcon start>{{ themeModeIcons[mode] }}</VIcon>
               {{ themeModeLabels[mode] }}
@@ -64,7 +74,7 @@ const buttonAvatarColor = computed(
         </div>
         <VDivider />
         <div class="pa-2">
-          <VItemGroup v-model="themeStore.color">
+          <VItemGroup v-model="themeStore.color" mandatory>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr)">
               <VItem
                 v-for="(color, i) in themeColors"
@@ -78,10 +88,11 @@ const buttonAvatarColor = computed(
                     icon
                     :active="isSelected"
                     :variant="isSelected ? 'tonal' : 'text'"
-                    @click="toggle"
+                    @click="toggleThemeColor(color, toggle)"
                   >
-                    <VIcon v-if="color === 'random'">mdi-lightbulb-question</VIcon>
-                    <VAvatar v-else :color="R.toKebabCase(color)" />
+                    <VAvatar :color="color === 'random' ? 'surface-variant' : R.toKebabCase(color)">
+                      <VIcon v-if="color === 'random'">mdi-lightbulb-question</VIcon>
+                    </VAvatar>
                   </VBtn>
                 </div>
               </VItem>

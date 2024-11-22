@@ -4,6 +4,7 @@ import { ThemeMode, actualThemeColors, getVuetifyThemeLabel } from '~~/vuetify.c
 
 export const useThemeStore = defineStore('theme', () => {
   const preferredColorScheme = usePreferredColorScheme()
+  const vTheme = useVTheme()
 
   // FIXME: useLocalStorage fallbacks to default value when page is reloaded
   //  maybe try `pinia-plugin-persistedstate` package instead
@@ -12,6 +13,7 @@ export const useThemeStore = defineStore('theme', () => {
 
   const mode = ref<ThemeMode>(ThemeMode.system)
   const color = ref<ThemeColor>('random')
+  const randomColor = ref<ActualThemeColor>('purple')
 
   const currentMode = computed<ActualThemeMode>(() => {
     if (mode.value === ThemeMode.system) {
@@ -19,39 +21,35 @@ export const useThemeStore = defineStore('theme', () => {
     }
     return mode.value
   })
-  const currentColor = computed<ActualThemeColor>(() => {
-    if (color.value === 'random') {
-      const index = Math.floor(Math.random() * actualThemeColors.length)
-      return actualThemeColors[index] ?? 'purple'
-    }
-    return color.value
-  })
+  const currentColor = computed<ActualThemeColor>(() =>
+    color.value === 'random' ? randomColor.value : color.value,
+  )
   const vuetifyLabel = computed(() => getVuetifyThemeLabel(currentMode.value, currentColor.value))
 
-  if (getCurrentInstance()) {
-    watch(mode, (newValue) => {
-      localStorageThemeMode.value = newValue
-    })
-    watch(color, (newValue) => {
-      localStorageThemeColor.value = newValue
-    })
-    const vTheme = useVTheme()
-    watch(currentMode, (newValue) => {
-      vTheme.global.name.value = getVuetifyThemeLabel(newValue, currentColor.value)
-    })
-    watch(currentColor, (newValue) => {
-      vTheme.global.name.value = getVuetifyThemeLabel(currentMode.value, newValue)
-    })
-  }
+  watch(vuetifyLabel, (newValue) => {
+    vTheme.global.name.value = newValue
+  })
+
+  watch([mode, color], ([newMode, newColor]) => {
+    if (newColor === 'random') {
+      setRandomColor()
+    }
+    localStorageThemeMode.value = newMode
+    localStorageThemeColor.value = newColor
+  })
 
   const isInitialized = ref(false)
 
   function initialize() {
+    vTheme.global.name.value = vuetifyLabel.value
     mode.value = localStorageThemeMode.value
     color.value = localStorageThemeColor.value
-    const { $vuetify } = useNuxtApp()
-    $vuetify.theme.global.name.value = vuetifyLabel.value
     isInitialized.value = true
+  }
+
+  function setRandomColor() {
+    const index = Math.floor(Math.random() * actualThemeColors.length)
+    randomColor.value = actualThemeColors[index] ?? 'purple'
   }
 
   return {
@@ -62,5 +60,6 @@ export const useThemeStore = defineStore('theme', () => {
     vuetifyLabel,
     isInitialized,
     initialize,
+    setRandomColor,
   }
 })

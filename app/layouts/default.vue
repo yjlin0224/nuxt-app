@@ -2,10 +2,6 @@
 import { ModalsContainer } from 'vue-final-modal'
 import { useDisplay } from 'vuetify'
 
-import usePocketbaseStores from '~/stores/pocketbase'
-
-const themeStore = useThemeStore()
-
 const appConfig = useAppConfig()
 const display = useDisplay()
 const route = useRoute()
@@ -22,19 +18,7 @@ useHead({
   meta: [{ property: 'og:title', content: pageTitle }],
 })
 
-const userStore = usePocketbaseStores.user()
-watch(
-  () => userStore.isAuthed,
-  (newValue) => {
-    if (!newValue) {
-      navigateTo({ name: 'user-auth', query: { redirect: route.fullPath } })
-    }
-  },
-)
-
-onMounted(() => {
-  themeStore.initialize()
-})
+const themeStore = useThemeStore()
 </script>
 
 <template>
