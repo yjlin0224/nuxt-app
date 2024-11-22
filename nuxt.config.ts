@@ -1,3 +1,7 @@
+import type { NuxtPage } from 'nuxt/schema'
+
+import is from '@sindresorhus/is'
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   future: {
@@ -50,7 +54,7 @@ export default defineNuxtConfig({
     download: false,
   },
   pinia: {
-    storesDirs: ['./stores/**'],
+    storesDirs: ['app/stores/**'],
   },
   vuetify: {
     moduleOptions: {
@@ -113,6 +117,26 @@ export default defineNuxtConfig({
         ],
       },
     ],
+  },
+  hooks: {
+    'pages:extend'(pages) {
+      function setMiddleware(pages: NuxtPage[]) {
+        for (const page of pages) {
+          page.meta ||= {}
+          if (is.string(page.meta.middleware)) {
+            page.meta.middleware = [page.meta.middleware]
+          }
+          if (!is.array(page.meta.middleware)) {
+            page.meta.middleware = []
+          }
+          page.meta.middleware = [...page.meta.middleware, 'auth']
+          if (page.children) {
+            setMiddleware(page.children)
+          }
+        }
+      }
+      setMiddleware(pages)
+    },
   },
   runtimeConfig: {
     public: {

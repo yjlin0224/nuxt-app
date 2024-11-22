@@ -1,19 +1,25 @@
 import {
+  type ConvertToNullable,
   type DataColumnConverter,
-  type WithBasePayload,
-  type WithBaseRecord,
   genericColumnConverter,
+  nullableStringColumnConverter,
 } from '@/composables/pocketbase/schemas/base'
-import { type AuthPayload, authDataColumnConverters } from '~/composables/pocketbase/schemas/auth'
+import {
+  type AuthPayload,
+  type AuthRecord,
+  authDataColumnConverters,
+} from '~/composables/pocketbase/schemas/auth'
 
-export type UserPayload = WithBasePayload<
-  AuthPayload & {
-    name: string
-    avatar: string
-  }
->
+type _UserPayload = {
+  name: string
+  avatar: string
+}
 
-export type UserRecord = WithBaseRecord<UserPayload>
+export type UserPayload = AuthPayload & _UserPayload
+
+type _UserRecord = ConvertToNullable<_UserPayload, 'avatar'>
+
+export type UserRecord = AuthRecord & _UserRecord
 
 export const userDataColumnConverters: DataColumnConverter<
   keyof UserPayload,
@@ -23,5 +29,5 @@ export const userDataColumnConverters: DataColumnConverter<
 >[] = [
   ...authDataColumnConverters,
   genericColumnConverter('name', 'name'),
-  genericColumnConverter('avatar', 'avatar'),
+  nullableStringColumnConverter('avatar', 'avatar'),
 ]

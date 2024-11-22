@@ -29,8 +29,10 @@ export type BaseRecord = ConvertToDateTimeWithSuffix<
 
 export type WithBasePayload<T extends Record<string, unknown>> = BasePayload &
   Omit<T, keyof BasePayload>
+export type WithoutBasePayload<T extends Record<string, unknown>> = Omit<T, keyof BasePayload>
 export type WithBaseRecord<T extends Record<string, unknown>> = BaseRecord &
   Omit<T, keyof BasePayload>
+export type WithoutBaseRecord<T extends Record<string, unknown>> = Omit<T, keyof BaseRecord>
 
 export function isRecordId(value: unknown): value is RecordId {
   // https://github.com/pocketbase/pocketbase/tree/master/models/base.go

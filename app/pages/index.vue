@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import {
-  ConfirmDialogActions,
-  ConfirmDialogType,
-} from '~/components/global/Modal/ConfirmDialog.vue'
-
-async function open() {
-  const confirmation = useConfirmation({
-    type: ConfirmDialogType.Warning,
-    title: 'Are you sure?',
-    message: 'This action cannot be undone.',
-    actions: ConfirmDialogActions.YesNo,
-    persistent: true,
-  })
-  console.log(await confirmation)
-}
+// definePageMeta({
+//   title: '首頁',
+// })
 </script>
 
 <template>
-  <div>首頁</div>
-  <VBtn @click="open()">Open Modal</VBtn>
+  <Teleport to="#app-bar--slot">
+    <VTextField
+      bg-color="surface"
+      clearable
+      density="compact"
+      flat
+      hide-details
+      label="搜尋"
+      prepend-inner-icon="mdi-magnify"
+      single-line
+      variant="solo-filled"
+    />
+  </Teleport>
+  <VContainer id="page--index" class="fill-height" fluid>
+    <div>首頁</div>
+  </VContainer>
 </template>

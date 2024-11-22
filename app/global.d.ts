@@ -10,7 +10,13 @@ declare global {
 
   // Type utilities
   type Branded<T> = T & { readonly $brand: unique symbol }
+  type ChangeValueType<T extends Record<string, unknown>, U> = {
+    [K in keyof T]: U
+  }
   type EnumType<T extends string | number> = Record<string, T>
+  type FilteredKeys<T extends Record<string, unknown>, U> = {
+    [K in keyof T]: T[K] extends U ? K : never
+  }[keyof T]
   type RemoveIndexSignature<T> = {
     [K in keyof T as K extends `${infer S}` ? S : never]: T[K]
   }
@@ -28,7 +34,9 @@ declare global {
     Interval,
     Zone,
     Branded,
+    ChangeValueType,
     EnumType,
+    FilteredKeys,
     RemoveIndexSignature,
     NonNullableProperty,
     NumberEnumType,

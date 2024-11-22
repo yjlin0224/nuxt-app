@@ -2,15 +2,15 @@ import type { ModalAction } from '~/components/global/Modal/props'
 
 import { useModal } from 'vue-final-modal'
 
-import type { ConfirmDialogProps } from '~/components/global/Modal/ConfirmDialog.vue'
+import type { NotifyToastProps } from '~/components/global/Modal/NotifyToast.vue'
 
-import { ModalConfirmDialog } from '#components'
+import { ModalNotifyToast } from '#components'
 
-export default function useConfirmation(props: ConfirmDialogProps) {
+export default function useNotification(props: NotifyToastProps) {
   const result = ref<ModalAction | null>(null)
   return new Promise<ModalAction | null>((resolve) => {
     const { open, close } = useModal({
-      component: ModalConfirmDialog,
+      component: ModalNotifyToast,
       attrs: {
         ...props,
         async onConfirm(action) {

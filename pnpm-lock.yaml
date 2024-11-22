@@ -11,9 +11,6 @@ importers:
       '@date-io/luxon':
         specifier: ^3.0.0
         version: 3.0.0(luxon@3.5.0)
-      '@material/material-color-utilities':
-        specifier: ^0.3.0
-        version: 0.3.0
       '@mdi/font':
         specifier: latest
         version: 7.4.47
@@ -44,6 +41,12 @@ importers:
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
+      hash-wasm:
+        specifier: ^4.12.0
+        version: 4.12.0
+      jdenticon:
+        specifier: ^3.3.0
+        version: 3.3.0
       luxon:
         specifier: ^3.5.0
         version: 3.5.0
@@ -59,6 +62,9 @@ importers:
       remeda:
         specifier: ^2.17.3
         version: 2.17.3
+      type-fest:
+        specifier: ^4.27.0
+        version: 4.27.0
       vee-validate:
         specifier: ^4.14.7
         version: 4.14.7(vue@3.5.13(typescript@5.6.3))
@@ -87,6 +93,9 @@ importers:
       '@eslint/config-inspector':
         specifier: ^0.5.6
         version: 0.5.6(eslint@9.14.0(jiti@2.4.0))
+      '@material/material-color-utilities':
+        specifier: ^0.3.0
+        version: 0.3.0
       '@nuxt/eslint':
         specifier: ^0.7.0
         version: 0.7.0(@vue/compiler-sfc@3.5.13)(eslint@9.14.0(jiti@2.4.0))(magicast@0.3.5)(rollup@4.27.2)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.0)(sass-embedded@1.81.0)(terser@5.36.0))
@@ -103,7 +112,7 @@ importers:
         specifier: ^8.16.0
         version: 8.16.0
       eslint:
-        specifier: ~9.14.0
+        specifier: ^9.14.0
         version: 9.14.0(jiti@2.4.0)
       nitropack:
         specifier: ~2.9.7
@@ -2331,6 +2340,9 @@ packages:
   caniuse-lite@1.0.30001680:
     resolution: {integrity: sha512-rPQy70G6AGUMnbwS1z6Xg+RkHYPAi18ihs47GH0jcxIG7wArmPgY3XbS2sRdBbxJljp3thdT8BIqv9ccCypiPA==}
 
+  canvas-renderer@2.2.1:
+    resolution: {integrity: sha512-RrBgVL5qCEDIXpJ6NrzyRNoTnXxYarqm/cS/W6ERhUJts5UQtt/XPEosGN3rqUkZ4fjBArlnCbsISJ+KCFnIAg==}
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -3328,6 +3340,9 @@ packages:
   hash-sum@2.0.0:
     resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==}
 
+  hash-wasm@4.12.0:
+    resolution: {integrity: sha512-+/2B2rYLb48I/evdOIhP+K/DD2ca2fgBjp6O+GBEnCDk2e4rpeXIK8GvIyRPjTezgmWn9gmKwkQjjx6BtqDHVQ==}
+
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
@@ -3583,6 +3598,11 @@ packages:
 
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
+
+  jdenticon@3.3.0:
+    resolution: {integrity: sha512-DhuBRNRIybGPeAjMjdHbkIfiwZCCmf8ggu7C49jhp6aJ7DYsZfudnvnTY5/1vgUhrGA7JaDAx1WevnpjCPvaGg==}
+    engines: {node: '>=6.4.0'}
+    hasBin: true
 
   jest-util@29.7.0:
     resolution: {integrity: sha512-z6EbKajIpqGKU56y5KBUgy1dt1ihhQJgWzUlZHArA/+X2ad7Cb5iF+AK1EWVL/Bo7Rz9uurpqw6SiBCefUbCGA==}
@@ -8321,6 +8341,10 @@ snapshots:
 
   caniuse-lite@1.0.30001680: {}
 
+  canvas-renderer@2.2.1:
+    dependencies:
+      '@types/node': 22.9.0
+
   ccount@2.0.1: {}
 
   chalk-template@1.1.0:
@@ -9478,6 +9502,8 @@ snapshots:
 
   hash-sum@2.0.0: {}
 
+  hash-wasm@4.12.0: {}
+
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
@@ -9764,6 +9790,10 @@ snapshots:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
+
+  jdenticon@3.3.0:
+    dependencies:
+      canvas-renderer: 2.2.1
 
   jest-util@29.7.0:
     dependencies:

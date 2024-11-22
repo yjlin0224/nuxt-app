@@ -4,6 +4,7 @@ import equal from 'fast-deep-equal'
 import {
   ClientResponseError,
   type CommonOptions,
+  type FileOptions,
   type ListResult,
   type RecordFullListOptions,
   type RecordListOptions,
@@ -18,6 +19,8 @@ import {
   type BaseRecord,
   type DataColumnConverter,
   type RecordId,
+  type WithoutBasePayload,
+  type WithoutBaseRecord,
   mustBeStringEnum,
 } from '~/composables/pocketbase/schemas/base'
 
@@ -63,22 +66,28 @@ export default function usePocketbaseCollectionBase<
     }, {} as TRecord)
   }
 
-  function convertRecordToPayload(record: TRecord): TPayload {
+  function convertRecordToPayload(
+    record: WithoutBaseRecord<TRecord>,
+  ): WithoutBasePayload<TPayload> {
     return Object.entries(record).reduce((payload, [key, value]) => {
+      if (['id', 'createdAt', 'updatedAt'].includes(key)) return payload
       const { recordToPayload } = dataColumnConverters.find(({ recordKey }) => recordKey === key)!
       return {
         ...payload,
         ...recordToPayload({ [key]: value }),
       }
-    }, {} as TPayload)
+    }, {} as WithoutBasePayload<TPayload>)
   }
 
-  function makePayloadPatch(newRecord: TRecord, oldRecord?: TRecord): Partial<TPayload> {
+  function makePayloadPatch(
+    newRecord: WithoutBaseRecord<TRecord>,
+    oldRecord?: WithoutBaseRecord<TRecord>,
+  ): Partial<WithoutBasePayload<TPayload>> {
     if (!is.plainObject(oldRecord)) return convertRecordToPayload(newRecord)
     const newPayload = convertRecordToPayload(newRecord)
     const oldPayload = convertRecordToPayload(oldRecord)
     return Object.entries(newPayload).reduce((patch, [key, value]) => {
-      if (!equal(value, oldPayload[key as keyof TPayload])) {
+      if (!equal(value, oldPayload[key as keyof WithoutBasePayload<TPayload>])) {
         return { ...patch, [key]: value }
       }
       return patch
@@ -123,20 +132,23 @@ export default function usePocketbaseCollectionBase<
     return convertPayloadToRecord(payload)
   }
 
-  async function add(record: TRecord, queryParams?: RecordOptions): Promise<TRecord> {
+  async function add(
+    record: WithoutBaseRecord<TRecord>,
+    queryParams?: RecordOptions,
+  ): Promise<TRecord> {
     const payload = convertRecordToPayload(record)
     const addedPayload = await service.create(payload, queryParams)
     return convertPayloadToRecord(addedPayload)
   }
 
   async function update(
-    newRecord: TRecord,
-    oldRecord?: TRecord,
+    id: RecordId,
+    newRecord: WithoutBaseRecord<TRecord>,
+    oldRecord?: WithoutBaseRecord<TRecord>,
     queryParams?: RecordOptions,
   ): Promise<TRecord> {
-    assert.truthy(newRecord.id === (oldRecord?.id ?? newRecord.id))
     const payloadPatch = makePayloadPatch(newRecord, oldRecord)
-    const updatedPayload = await service.update(newRecord.id, payloadPatch, queryParams)
+    const updatedPayload = await service.update(id, payloadPatch, queryParams)
     return convertPayloadToRecord(updatedPayload)
   }
 
@@ -185,6 +197,17 @@ export default function usePocketbaseCollectionBase<
     return service.unsubscribe(topic)
   }
 
+  function getFileUrl<T extends FilteredKeys<TRecord, string | null>>(
+    record: TRecord,
+    key: T,
+    queryParams?: FileOptions,
+  ): TRecord[T] {
+    const data = { collectionName: serviceKey, id: record.id }
+    const value = record[key]
+    if (!is.string(value)) return value
+    return database.getFileUrl(data, value, queryParams) as NonNullable<TRecord[T]>
+  }
+
   return {
     isBase: true as const,
     isAuth: false,
@@ -204,5 +227,6 @@ export default function usePocketbaseCollectionBase<
     removeById,
     subscribe,
     unsubscribe,
+    getFileUrl,
   }
 }

@@ -13,9 +13,7 @@ let database: Pocketbase | null = null
 function getDatabase() {
   if (!database) {
     const runtimeConfig = useRuntimeConfig()
-    console.log('runtimeConfig.public.pocketbaseUrl', runtimeConfig.public.pocketbaseUrl)
     database = new Pocketbase(runtimeConfig.public.pocketbaseUrl)
-    // database = new Pocketbase('http://localhost:8090')
   }
   return database
 }

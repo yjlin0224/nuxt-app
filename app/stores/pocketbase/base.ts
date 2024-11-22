@@ -1,5 +1,6 @@
 import type {
   CommonOptions,
+  FileOptions,
   ListResult,
   RecordFullListOptions,
   RecordListOptions,
@@ -8,7 +9,12 @@ import type {
 } from 'pocketbase'
 import type { PocketbaseSchemaKey } from '~/composables/pocketbase/collections'
 import type usePocketbaseBase from '~/composables/pocketbase/collections/base'
-import type { BasePayload, BaseRecord, RecordId } from '~/composables/pocketbase/schemas/base'
+import type {
+  BasePayload,
+  BaseRecord,
+  RecordId,
+  WithoutBaseRecord,
+} from '~/composables/pocketbase/schemas/base'
 
 import usePocketbaseCollections from '~/composables/pocketbase/collections'
 import {
@@ -22,7 +28,7 @@ export default function pocketbaseBaseStoreDefiner<
   TRecord extends BaseRecord,
   TPocketbase extends ReturnType<typeof usePocketbaseBase<TPayload, TRecord>>,
 >(schemaKey: K) {
-  return defineStore(schemaKey, () => {
+  return defineStore(`${schemaKey}.base`, () => {
     const collection = usePocketbaseCollections[schemaKey]() as unknown as TPocketbase
 
     const records: Ref<TRecord[]> = ref([])
@@ -71,12 +77,22 @@ export default function pocketbaseBaseStoreDefiner<
       return record
     }
 
-    async function update(
-      newRecord: TRecord,
-      oldRecord?: TRecord,
+    async function add(
+      record: WithoutBaseRecord<TRecord>,
       queryParams?: RecordOptions,
     ): Promise<TRecord> {
-      const record = await collection.update(newRecord, oldRecord, queryParams)
+      const newRecord = await collection.add(record, queryParams)
+      upsertToRecords(newRecord)
+      return newRecord
+    }
+
+    async function update(
+      id: RecordId,
+      newRecord: WithoutBaseRecord<TRecord>,
+      oldRecord?: WithoutBaseRecord<TRecord>,
+      queryParams?: RecordOptions,
+    ): Promise<TRecord> {
+      const record = await collection.update(id, newRecord, oldRecord, queryParams)
       upsertToRecords(record)
       return record
     }
@@ -120,19 +136,31 @@ export default function pocketbaseBaseStoreDefiner<
       subscribedTopics.value = subscribedTopics.value.filter((t) => t !== topic)
     }
 
+    function getFileUrl<T extends FilteredKeys<TRecord, string | null>>(
+      record: TRecord,
+      key: T,
+      queryParams?: FileOptions,
+    ): TRecord[T] {
+      return collection.getFileUrl(record, key, queryParams)
+    }
+
     return {
       collection,
       records,
       recordMap,
       subscribedTopics,
+      upsertToRecords,
+      deleteFromRecords,
       getAll,
       getMany,
       getFirst,
       getById,
+      add,
       update,
       removeById,
       subscribe,
       unsubscribe,
+      getFileUrl,
     }
   })
 }

@@ -75,24 +75,26 @@ export enum ThemeMode {
   light = 'light',
   dark = 'dark',
 }
-
 export type ActualThemeMode = Exclude<ThemeMode, ThemeMode.system>
-export type ThemeScheme = keyof Omit<typeof colors, 'shades'>
+export type ActualThemeColor = keyof Omit<typeof colors, 'shades'>
+export type ThemeColor = ActualThemeColor | 'random'
 
+export const themeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark]
 export const actualThemeModes = [ThemeMode.light, ThemeMode.dark]
-export const themeSchemes: ThemeScheme[] = R.pipe(colors, R.omit(['shades']), R.keys())
+export const actualThemeColors: ActualThemeColor[] = R.pipe(colors, R.omit(['shades']), R.keys())
+export const themeColors: ThemeColor[] = [...actualThemeColors, 'random']
 
-type VuetifyThemeLabel = `${ActualThemeMode}/${ThemeScheme}`
+type VuetifyThemeLabel = `${ActualThemeMode}/${ReturnType<typeof R.toKebabCase<ActualThemeColor>>}`
 type VuetifyThemes = Record<VuetifyThemeLabel, ThemeDefinition>
 
 export function getVuetifyThemeLabel(
   actualThemeMode: ActualThemeMode,
-  themeScheme: ThemeScheme,
+  actualThemeColor: ActualThemeColor,
 ): VuetifyThemeLabel {
-  return `${actualThemeMode}/${themeScheme}`
+  return `${actualThemeMode}/${R.toKebabCase(actualThemeColor)}`
 }
 
-function generateVuetifyThemes(themeScheme: ThemeScheme): Partial<VuetifyThemes> {
+function generateVuetifyThemes(themeColor: ActualThemeColor): Partial<VuetifyThemes> {
   type ColorRgbCode = `#${string}`
   type ColorArgbValue = number
 
@@ -202,21 +204,21 @@ function generateVuetifyThemes(themeScheme: ThemeScheme): Partial<VuetifyThemes>
     }
   }
 
-  const colorRgbCode = colors[themeScheme].base as ColorRgbCode
+  const colorRgbCode = colors[themeColor].base as ColorRgbCode
   const colorArgbValue = convertColorRgbCodeToArgbValue(colorRgbCode)
   return {
-    [getVuetifyThemeLabel(ThemeMode.light, themeScheme)]: generateVuetifyTheme(
+    [getVuetifyThemeLabel(ThemeMode.light, themeColor)]: generateVuetifyTheme(
       ThemeMode.light,
       colorArgbValue,
     ),
-    [getVuetifyThemeLabel(ThemeMode.dark, themeScheme)]: generateVuetifyTheme(
+    [getVuetifyThemeLabel(ThemeMode.dark, themeColor)]: generateVuetifyTheme(
       ThemeMode.dark,
       colorArgbValue,
     ),
   }
 }
 
-const themes = R.pipe(themeSchemes, R.map(generateVuetifyThemes), R.mergeAll) as VuetifyThemes
+const themes = R.pipe(actualThemeColors, R.map(generateVuetifyThemes), R.mergeAll) as VuetifyThemes
 
 export default defineVuetifyConfiguration({
   blueprint: md3,
@@ -263,5 +265,19 @@ export default defineVuetifyConfiguration({
   },
   theme: {
     themes,
+  },
+  defaults: {
+    global: {},
+    VAppBar: {
+      color: 'surface-variant',
+      density: 'comfortable',
+    },
+    VToolbar: {
+      color: 'surface',
+      density: 'comfortable',
+    },
+    VTooltip: {
+      contentClass: 'bg-secondary',
+    },
   },
 })

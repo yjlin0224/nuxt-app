@@ -1,5 +1,4 @@
 import {
-  type BasePayload,
   type ConvertToNullableDateTimeWithSuffix,
   type ConvertToType,
   type DataColumnConverter,
@@ -16,28 +15,28 @@ export enum ExampleSelectionOption {
   OptionB = 'optionB',
 }
 
-export type ExamplePayload = WithBasePayload<
-  BasePayload & {
-    textField: string
-    numberField: number
-    booleanField: boolean
-    dateTimeField: string
-    singleSelectionField: string
-    multiSelectionField: string[]
-  }
+type _ExamplePayload = {
+  textField: string
+  numberField: number
+  booleanField: boolean
+  dateTimeField: string
+  singleSelectionField: string
+  multiSelectionField: string[]
+}
+
+export type ExamplePayload = WithBasePayload<_ExamplePayload>
+
+type _ExampleRecord = ConvertToType<
+  ConvertToType<
+    ConvertToNullableDateTimeWithSuffix<_ExamplePayload, 'dateTimeField'>,
+    'singleSelectionField',
+    ExampleSelectionOption | null
+  >,
+  'multiSelectionField',
+  ExampleSelectionOption[]
 >
 
-export type ExampleRecord = WithBaseRecord<
-  ConvertToType<
-    ConvertToType<
-      ConvertToNullableDateTimeWithSuffix<ExamplePayload, 'dateTimeField'>,
-      'singleSelectionField',
-      ExampleSelectionOption | null
-    >,
-    'multiSelectionField',
-    ExampleSelectionOption[]
-  >
->
+export type ExampleRecord = WithBaseRecord<_ExampleRecord>
 
 export const exampleDataColumnConverters: DataColumnConverter<
   keyof ExamplePayload,

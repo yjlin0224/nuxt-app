@@ -7,7 +7,13 @@ import type {
 } from 'pocketbase'
 import type Pocketbase from 'pocketbase'
 import type { AuthPayload, AuthRecord } from '~/composables/pocketbase/schemas/auth'
-import type { DataColumnConverter, RecordId } from '~/composables/pocketbase/schemas/base'
+import type {
+  DataColumnConverter,
+  RecordId,
+  WithoutBaseRecord,
+} from '~/composables/pocketbase/schemas/base'
+
+import { blake3 } from 'hash-wasm'
 
 import usePocketbaseCollectionBase from '~/composables/pocketbase/collections/base'
 
@@ -38,6 +44,17 @@ export type OAuth2Provider =
   | 'vk'
   | 'yandex'
 
+export type AuthAddPasswordPayload = {
+  password: string
+  passwordConfirm: string
+}
+
+export type AuthUpdatePasswordPayload = {
+  oldPassword: string
+  password: string
+  passwordConfirm: string
+}
+
 export default function usePocketbaseCollectionAuth<
   TPayload extends AuthPayload,
   TRecord extends AuthRecord,
@@ -55,12 +72,53 @@ export default function usePocketbaseCollectionAuth<
   const base = usePocketbaseCollectionBase(database, serviceKey, dataColumnConverters)
   const { service } = base
 
+  async function hashPasswordPayload<T extends AuthAddPasswordPayload | AuthUpdatePasswordPayload>(
+    payload: T,
+  ): Promise<T> {
+    return Object.fromEntries(
+      await Promise.all(
+        Object.entries(payload).map(async ([key, value]) => [key, await blake3(value)]),
+      ),
+    ) as T
+  }
+
+  async function add(
+    record: WithoutBaseRecord<TRecord>,
+    passwordPayload: AuthAddPasswordPayload,
+    queryParams?: RecordOptions,
+  ): Promise<TRecord> {
+    const hashedPasswordPayload = await hashPasswordPayload(passwordPayload)
+    const payload = { ...base.convertRecordToPayload(record), ...hashedPasswordPayload }
+    const addedPayload = await service.create(payload, queryParams)
+    return base.convertPayloadToRecord(addedPayload)
+  }
+
+  async function update(
+    id: RecordId,
+    newRecord: WithoutBaseRecord<TRecord>,
+    oldRecord?: WithoutBaseRecord<TRecord>,
+    passwordPayload?: AuthUpdatePasswordPayload,
+    queryParams?: RecordOptions,
+  ): Promise<TRecord> {
+    const hashedPasswordPayload = passwordPayload ? await hashPasswordPayload(passwordPayload) : {}
+    const payloadPatch = {
+      ...base.makePayloadPatch(newRecord, oldRecord),
+      ...hashedPasswordPayload,
+    }
+    const updatedPayload = await service.update(id, payloadPatch, queryParams)
+    return base.convertPayloadToRecord(updatedPayload)
+  }
+
   async function authWithPassword(
     usernameOrEmail: string,
     password: string,
     options?: RecordOptions,
   ): Promise<RecordAuthResponse<TRecord>> {
-    const response = await service.authWithPassword(usernameOrEmail, password, options)
+    const response = await service.authWithPassword(
+      usernameOrEmail,
+      await blake3(password),
+      options,
+    )
     return {
       ...response,
       record: base.convertPayloadToRecord(response.record),
@@ -150,6 +208,8 @@ export default function usePocketbaseCollectionAuth<
   return {
     ...base,
     isAuth: true as const,
+    add,
+    update,
     authWithPassword,
     authWithOAuth2,
     authRefresh,
