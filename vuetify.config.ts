@@ -84,14 +84,14 @@ export const actualThemeModes = [ThemeMode.light, ThemeMode.dark]
 export const actualThemeColors: ActualThemeColor[] = R.pipe(colors, R.omit(['shades']), R.keys())
 export const themeColors: ThemeColor[] = [...actualThemeColors, 'random']
 
-type VuetifyThemeLabel = `${ActualThemeMode}/${ReturnType<typeof R.toKebabCase<ActualThemeColor>>}`
+type VuetifyThemeLabel = `${ActualThemeMode}-${ReturnType<typeof R.toKebabCase<ActualThemeColor>>}`
 type VuetifyThemes = Record<VuetifyThemeLabel, ThemeDefinition>
 
 export function getVuetifyThemeLabel(
   actualThemeMode: ActualThemeMode,
   actualThemeColor: ActualThemeColor,
 ): VuetifyThemeLabel {
-  return `${actualThemeMode}/${R.toKebabCase(actualThemeColor)}`
+  return `${actualThemeMode}-${R.toKebabCase(actualThemeColor)}`
 }
 
 function generateVuetifyThemes(themeColor: ActualThemeColor): Partial<VuetifyThemes> {
@@ -271,6 +271,14 @@ export default defineVuetifyConfiguration({
     VAppBar: {
       color: 'surface-variant',
       density: 'comfortable',
+    },
+    VMain: {
+      class: 'bg-surface-variant',
+    },
+    VNavigationDrawer: {
+      color: 'surface-variant',
+      floating: true,
+      width: 240,
     },
     VToolbar: {
       color: 'surface',

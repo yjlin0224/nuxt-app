@@ -118,19 +118,33 @@ export default defineNuxtConfig({
       },
     ],
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // FIXME: cannot disable "Deprecation Warning"
+          quietDeps: true,
+        },
+      },
+    },
+  },
   hooks: {
     'pages:extend'(pages) {
       function setMiddleware(pages: NuxtPage[]) {
         for (const page of pages) {
-          page.meta ||= {}
+          if (!is.plainObject(page.meta)) {
+            page.meta = {}
+          }
           if (is.string(page.meta.middleware)) {
             page.meta.middleware = [page.meta.middleware]
           }
           if (!is.array(page.meta.middleware)) {
             page.meta.middleware = []
           }
-          page.meta.middleware = [...page.meta.middleware, 'auth']
-          if (page.children) {
+          if (!page.meta.middleware.includes('auth')) {
+            page.meta.middleware = [...page.meta.middleware, 'auth']
+          }
+          if (is.array(page.children)) {
             setMiddleware(page.children)
           }
         }

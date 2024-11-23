@@ -28,7 +28,7 @@ async function signOut() {
 
 <template>
   <VBtn
-    v-tooltip:bottom="'使用者'"
+    v-tooltip:bottom="'使用者資訊'"
     class="app--user-menu-icon-button"
     icon
     :loading="requests.signOut.requesting.value"
@@ -59,6 +59,13 @@ async function signOut() {
       >
         <template #prepend>
           <VAvatar color="white" border :size="48">
+            <VTooltip
+              v-if="is.string(userStore.authedRecord.email)"
+              activator="parent"
+              location="bottom"
+            >
+              {{ userStore.authedRecord.email }}
+            </VTooltip>
             <VImg
               v-if="is.string(userStore.authedRecord.avatar)"
               :src="userStore.getFileUrl(userStore.authedRecord, 'avatar')!"

@@ -60,15 +60,18 @@ const iconProps = computed(() => modalIconProps[props.type])
     <template #default="{ close }">
       <VCard>
         <VToolbar>
-          <VIcon v-if="is.plainObject(iconProps)" class="ml-4" v-bind="iconProps" />
+          <template v-if="is.plainObject(iconProps)" #prepend>
+            <VIcon v-bind="iconProps" />
+          </template>
+          <template #append>
+            <VBtn v-if="showCloseButton" icon="mdi-close" @click="close()" />
+          </template>
           <VToolbarTitle>
             <template v-if="is.nonEmptyStringAndNotWhitespace(props.title)">
               {{ props.title }}
             </template>
             <slot v-else name="title" />
           </VToolbarTitle>
-          <VSpacer />
-          <VBtn v-if="showCloseButton" icon="mdi-close" @click="close()" />
         </VToolbar>
         <VCardText style="white-space: pre-line">
           <template v-if="is.nonEmptyStringAndNotWhitespace(props.message)">
@@ -82,16 +85,19 @@ const iconProps = computed(() => modalIconProps[props.type])
             <slot name="code" />
           </code>
         </VCardText>
-        <VCardActions v-if="props.actions.length > 0">
-          <VBtn
-            v-for="action in props.actions"
-            :key="action"
-            class="flex-1-0"
-            v-bind="modalActionButtonProps[action]"
-            variant="tonal"
-            @click="emits('confirm', action)"
-          />
-        </VCardActions>
+        <template v-if="props.actions.length > 0">
+          <VDivider />
+          <VCardActions>
+            <VBtn
+              v-for="action in props.actions"
+              :key="action"
+              class="flex-1-0"
+              v-bind="modalActionButtonProps[action]"
+              variant="tonal"
+              @click="emits('confirm', action)"
+            />
+          </VCardActions>
+        </template>
       </VCard>
       <!-- v-dialog css loading hack -->
       <VDialog v-if="false" />

@@ -58,7 +58,7 @@ function toggleThemeColor(color: ThemeColor, toggle: (() => void) | undefined) {
 </script>
 
 <template>
-  <VBtn v-tooltip:bottom="'主題'" class="app--theme-menu-icon-button" icon>
+  <VBtn v-tooltip:bottom="'主題設定'" class="app--theme-menu-icon-button" icon>
     <VAvatar :color="buttonAvatarColor">
       <VIcon :icon="buttonIcon" />
     </VAvatar>

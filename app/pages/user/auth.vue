@@ -71,7 +71,7 @@ async function goNextAuthWindowItem(nextItem: AuthWindowItem, canGoPrevious = tr
 }
 
 const authWindowItemTitles: { [key in AuthWindowItem]: string } = {
-  [AuthWindowItem.CheckUserExists]: '輸入使用者名稱或信箱',
+  [AuthWindowItem.CheckUserExists]: '輸入使用者名稱或電子郵件地址',
   [AuthWindowItem.SignIn]: '輸入密碼',
   [AuthWindowItem.RegisterAndSignIn]: '註冊帳號',
 }
@@ -121,10 +121,22 @@ const formValidationSchemaOfAuthWindowItems = computed<FormValidationSchemaOfAut
       .matches(/^\w[\w.]*$/, '使用者帳號只能使用0~9、A~Z、a~z、_、.且頭不能是.')
       .min(3, '使用者帳號最少需要3個字元')
       .max(150, '使用者帳號最多只能150個字元')
-    const email = yup.string().test('is-email', '電子信箱的格式無效', isExistingEmail)
+    const email = yup.string().test('is-email', '電子郵件地址的格式無效', isExistingEmail)
+    // FIXME: cannot display original error message of `username` and `email`
+    // const usernameOrEmail = yup.string().test('is-username-or-email', (value) => {
+    //   if (!is.string(value)) return false
+    //   try {
+    //     ;(value.includes('@') ? email : username).validateSync(value)
+    //   } catch (error) {
+    //     if (error instanceof yup.ValidationError) {
+    //       return error
+    //     }
+    //   }
+    //   return true
+    // })
     const usernameOrEmail = yup
       .string()
-      .test('is-email', '電子信箱的格式無效', (value) =>
+      .test('is-email', '電子郵件地址的格式無效', (value) =>
         (value ?? '').includes('@') ? isExistingEmail(value) : true,
       )
       .test('is-username', '使用者帳號的格式無效', (value) =>
@@ -217,7 +229,7 @@ const formInputPropsOfAuthWindowItems = computed<FormInputPropsOfAuthWindowItems
     id: 'email',
     type: 'email',
     name: 'email',
-    label: '信箱',
+    label: '電子郵件地址',
     prependInnerIcon: 'mdi-email',
   }
   const password: VTextField['$props'] = {
@@ -268,7 +280,7 @@ const formInputPropsOfAuthWindowItems = computed<FormInputPropsOfAuthWindowItems
           : username),
         id: 'username-or-email',
         name: 'username-or-email',
-        label: '使用者名稱或信箱 *',
+        label: '使用者名稱或電子郵件地址 *',
         autofocus: true,
       },
     },
@@ -279,7 +291,7 @@ const formInputPropsOfAuthWindowItems = computed<FormInputPropsOfAuthWindowItems
           : username),
         id: 'username-or-email',
         name: 'username-or-email',
-        label: '使用者名稱或信箱 *',
+        label: '使用者名稱或電子郵件地址 *',
         readonly: true,
         hideDetails: true,
       },
@@ -448,126 +460,126 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VContainer id="page--user-auth" class="fill-height" fluid>
-    <VCard class="mx-auto" :width="400">
-      <VWindow v-model="authWindow.currentItem.value">
-        <template v-for="(item, _, i) in AuthWindowItem" :key="i">
-          <VWindowItem v-if="authWindow.items.value.includes(item)" :value="item">
-            <VToolbar>
-              <template #prepend>
-                <VBtn
-                  icon="mdi-arrow-left"
-                  :disabled="authWindow.items.value.indexOf(item) === 0"
-                  @click="goPreviousAuthWindowItem()"
-                />
-              </template>
-              <VToolbarTitle>
-                {{ checkingAuth ? '檢查登入狀態…' : authWindowItemTitles[item] }}
-              </VToolbarTitle>
-              <VProgressLinear
-                :active="checkingAuth"
-                :indeterminate="checkingAuth"
-                color="primary"
-                absolute
+  <VCard id="page--user-auth" class="mx-auto" :width="400">
+    <VWindow v-model="authWindow.currentItem.value">
+      <template v-for="(item, _, i) in AuthWindowItem" :key="i">
+        <VWindowItem v-if="authWindow.items.value.includes(item)" :value="item">
+          <VToolbar>
+            <template v-if="!(checkingAuth || userStore.isAuthed)" #prepend>
+              <VBtn
+                icon="mdi-arrow-left"
+                :disabled="authWindow.items.value.indexOf(item) === 0"
+                @click="goPreviousAuthWindowItem()"
               />
-            </VToolbar>
-            <VForm
-              :id="`form--${item}`"
-              :disabled="
-                formOfAuthWindowItems[item].isSubmitting.value || checkingAuth || userStore.isAuthed
-              "
-              @submit.prevent="formSubmitOfAuthWindowItems[item]($event)"
-            >
-              <VCardText>
-                <template
-                  v-if="item === AuthWindowItem.CheckUserExists || item === AuthWindowItem.SignIn"
-                >
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].usernameOrEmail.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].usernameOrEmail"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.usernameOrEmail"
-                      />
-                    </VCol>
-                  </VRow>
-                </template>
-                <template v-if="item === AuthWindowItem.SignIn">
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].password.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].password"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.password"
-                      />
-                    </VCol>
-                  </VRow>
-                </template>
-                <template v-if="item === AuthWindowItem.RegisterAndSignIn">
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].username.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].username"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.username"
-                      />
-                    </VCol>
-                  </VRow>
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].email.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].email"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.email"
-                      />
-                    </VCol>
-                  </VRow>
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].password.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].password"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.password"
-                      />
-                    </VCol>
-                  </VRow>
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].passwordConfirm.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].passwordConfirm"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.passwordConfirm"
-                      />
-                    </VCol>
-                  </VRow>
-                  <VRow>
-                    <VCol>
-                      <VTextField
-                        v-model="formFieldsOfAuthWindowItems[item].name.value"
-                        v-bind="formInputPropsOfAuthWindowItems[item].name"
-                        :error-messages="formOfAuthWindowItems[item].errors.value.name"
-                      />
-                    </VCol>
-                  </VRow>
-                </template>
-              </VCardText>
-              <VDivider />
-              <VCardActions>
-                <VSpacer />
-                <VBtn
-                  color="primary"
-                  variant="flat"
-                  type="submit"
-                  :disabled="!formOfAuthWindowItems[item].meta.value.valid"
-                  :loading="formOfAuthWindowItems[item].isSubmitting.value"
-                >
-                  {{ authWindowItemSubmitButtonLabels[item] }}
-                </VBtn>
-              </VCardActions>
-            </VForm>
-          </VWindowItem>
-        </template>
-      </VWindow>
-    </VCard>
-  </VContainer>
+            </template>
+            <VToolbarTitle>
+              <template v-if="checkingAuth || userStore.isAuthed">
+                {{ checkingAuth ? '檢查登入狀態中…' : '跳轉頁面中…' }}
+              </template>
+              <template v-else>{{ authWindowItemTitles[item] }}</template>
+            </VToolbarTitle>
+            <VProgressLinear
+              :active="checkingAuth || userStore.isAuthed"
+              :indeterminate="checkingAuth || userStore.isAuthed"
+              color="primary"
+              absolute
+            />
+          </VToolbar>
+          <VForm
+            v-if="!(checkingAuth || userStore.isAuthed)"
+            :id="`form--${item}`"
+            :disabled="formOfAuthWindowItems[item].isSubmitting.value"
+            @submit.prevent="formSubmitOfAuthWindowItems[item]($event)"
+          >
+            <VCardText>
+              <template
+                v-if="item === AuthWindowItem.CheckUserExists || item === AuthWindowItem.SignIn"
+              >
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].usernameOrEmail.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].usernameOrEmail"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.usernameOrEmail"
+                    />
+                  </VCol>
+                </VRow>
+              </template>
+              <template v-if="item === AuthWindowItem.SignIn">
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].password.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].password"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.password"
+                    />
+                  </VCol>
+                </VRow>
+              </template>
+              <template v-if="item === AuthWindowItem.RegisterAndSignIn">
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].username.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].username"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.username"
+                    />
+                  </VCol>
+                </VRow>
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].email.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].email"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.email"
+                    />
+                  </VCol>
+                </VRow>
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].password.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].password"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.password"
+                    />
+                  </VCol>
+                </VRow>
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].passwordConfirm.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].passwordConfirm"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.passwordConfirm"
+                    />
+                  </VCol>
+                </VRow>
+                <VRow>
+                  <VCol>
+                    <VTextField
+                      v-model="formFieldsOfAuthWindowItems[item].name.value"
+                      v-bind="formInputPropsOfAuthWindowItems[item].name"
+                      :error-messages="formOfAuthWindowItems[item].errors.value.name"
+                    />
+                  </VCol>
+                </VRow>
+              </template>
+            </VCardText>
+            <VDivider />
+            <VCardActions>
+              <VSpacer />
+              <VBtn
+                color="primary"
+                variant="flat"
+                type="submit"
+                :disabled="!formOfAuthWindowItems[item].meta.value.valid"
+                :loading="formOfAuthWindowItems[item].isSubmitting.value"
+              >
+                {{ authWindowItemSubmitButtonLabels[item] }}
+              </VBtn>
+            </VCardActions>
+          </VForm>
+        </VWindowItem>
+      </template>
+    </VWindow>
+  </VCard>
 </template>

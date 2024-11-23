@@ -10,7 +10,7 @@ useHead({
 </script>
 
 <template>
-  <NuxtLoadingIndicator />
+  <NuxtLoadingIndicator :height="4" />
   <NuxtRouteAnnouncer />
   <NuxtLayout>
     <NuxtPage />

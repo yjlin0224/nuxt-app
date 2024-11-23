@@ -1,7 +1,5 @@
 <script setup lang="ts">
-// definePageMeta({
-//   title: '首頁',
-// })
+const display = useVDisplay()
 </script>
 
 <template>
@@ -16,9 +14,9 @@
       prepend-inner-icon="mdi-magnify"
       single-line
       variant="solo-filled"
-    />
+    >
+      <VTooltip v-if="display.xs.value" activator="parent" location="bottom">搜尋</VTooltip>
+    </VTextField>
   </Teleport>
-  <VContainer id="page--index" class="fill-height" fluid>
-    <div>首頁</div>
-  </VContainer>
+  <VCard id="page--index" class="w-100 h-100" flat>首頁</VCard>
 </template>

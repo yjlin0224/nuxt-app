@@ -15,10 +15,14 @@ html {
   overflow-y: auto !important;
 }
 
-/* stylelint-disable selector-class-pattern */
-
 .v-btn__content {
-  width: 100%;
+  width: 100% !important;
 }
 
-/* stylelint-enable selector-class-pattern */
+.v-toolbar__prepend > .v-icon {
+  margin: 12px !important;
+}
+
+.v-toolbar__content > .v-toolbar-title {
+  margin-inline-start: 4px !important;
+}

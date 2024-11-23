@@ -7,6 +7,7 @@ declare global {
   import { DateTime, Duration, Interval, Zone } from '@types/luxon'
   import * as R from 'remeda'
   import * as yup from 'yup'
+  // TODO: import type-fest
 
   // Type utilities
   type Branded<T> = T & { readonly $brand: unique symbol }
@@ -57,5 +58,11 @@ declare module 'vue' {
     readonly Duration: UnwrapRef<(typeof import('@types/luxon'))['Duration']>
     readonly Interval: UnwrapRef<(typeof import('@types/luxon'))['Interval']>
     readonly Zone: UnwrapRef<(typeof import('@types/luxon'))['Zone']>
+  }
+}
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    parent?: string
   }
 }

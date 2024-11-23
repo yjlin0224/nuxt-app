@@ -94,7 +94,7 @@ const formValidationSchema = computed<FormValidationSchema>(() => {
     .matches(/^\w[\w.]*$/, '使用者帳號只能使用0~9、A~Z、a~z、_、.且頭不能是.')
     .min(3, '使用者帳號最少需要3個字元')
     .max(150, '使用者帳號最多只能150個字元')
-  const email = yup.string().test('is-email', '電子信箱的格式無效', isExistingEmail)
+  const email = yup.string().test('is-email', '電子郵件地址的格式無效', isExistingEmail)
   const password = yup
     .string()
     .matches(/^[\x20-\x7e]+$/, '只能使用0~9、A~Z、a~z和常見的標點符號')
@@ -156,7 +156,7 @@ const formInputProps = computed<FormInputProps>(() => {
     id: 'email',
     type: 'email',
     name: 'email',
-    label: '信箱',
+    label: '電子郵件地址',
     prependInnerIcon: 'mdi-email',
   }
   const oldPassword: VTextField['$props'] = {
@@ -292,7 +292,7 @@ async function closeDialog() {
     <VCard>
       <VToolbar color="surface">
         <template #prepend>
-          <VIcon class="ma-3">mdi-pencil</VIcon>
+          <VIcon>mdi-pencil</VIcon>
         </template>
         <template #append>
           <VBtn icon="mdi-close" :disabled="form.isSubmitting.value" @click="closeDialog()" />

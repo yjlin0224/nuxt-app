@@ -16,8 +16,7 @@ export type NotifyToastProps = {
   message?: string
   actions?: ModalAction[]
   location?: VSnackbar['$props']['location']
-  timeout?: number
-  // maxWidth?: number
+  timeout?: VSnackbar['$props']['timeout']
 }
 </script>
 
@@ -53,14 +52,15 @@ const modelValue = ref(true)
       <VSnackbar
         v-model="modelValue"
         color="surface"
+        :location="props.location"
         :timeout="props.timeout"
         :z-index="4000"
         @update:model-value="(v) => (v ? undefined : close())"
       >
         <VIcon v-if="is.plainObject(iconProps)" v-bind="iconProps" class="mr-4" />
-        <template v-if="is.nonEmptyStringAndNotWhitespace(props.message)">
+        <span v-if="is.nonEmptyStringAndNotWhitespace(props.message)" style="white-space: pre-line">
           {{ props.message }}
-        </template>
+        </span>
         <slot v-else />
         <template v-if="props.actions.length > 0" #actions>
           <VBtn
