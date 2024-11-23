@@ -2,6 +2,7 @@ extends:
   - stylelint-config-standard-scss
   - stylelint-config-recommended-vue/scss
   - stylelint-config-recess-order
+  # TODO: https://www.npmjs.com/package/stylelint-prettier
 ignoreFiles:
   - .nuxt/**
   - .output/**

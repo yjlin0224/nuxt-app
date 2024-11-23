@@ -23,7 +23,7 @@ export default withNuxt(
   }),
   {
     rules: {
-      'prettier/prettier': 'error',
+      // 'prettier/prettier': 'error',
       'import/prefer-default-export': 'off',
       'import/order': [
         'error',

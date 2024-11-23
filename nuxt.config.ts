@@ -3,7 +3,7 @@ import type { NuxtPage } from 'nuxt/schema'
 import is from '@sindresorhus/is'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
+  compatibilityDate: '2024-11-02', // nitropack 2.10.0
   future: {
     compatibilityVersion: 4,
   },
@@ -75,7 +75,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     experimental: {
-      openAPI: true,
+      // FIXME: https://github.com/nuxt/nuxt/issues/29804#issuecomment-2478586778
+      // openAPI: true,
     },
   },
   features: {
@@ -89,12 +90,10 @@ export default defineNuxtConfig({
       {
         from: '@sindresorhus/is',
         dtsDisabled: true,
-        imports: [{ name: 'default', as: 'is' }],
-      },
-      {
-        from: '@sindresorhus/is',
-        dtsDisabled: true,
-        imports: [{ name: 'assert', as: 'assert' }],
+        imports: [
+          { name: 'default', as: 'is' },
+          { name: 'assert', as: 'assert' },
+        ],
       },
       {
         from: 'yup',
@@ -122,7 +121,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          // FIXME: cannot disable "Deprecation Warning"
+          api: 'modern-compiler',
           quietDeps: true,
         },
       },
