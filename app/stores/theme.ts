@@ -1,6 +1,13 @@
-import type { ActualThemeColor, ActualThemeMode, ThemeColor } from '~~/vuetify.config'
+import type {
+  ActualThemeColor,
+  ActualThemeMode,
+  ThemeColor,
+  ThemeModeValue,
+} from '~~/vuetify.config'
 
 import { ThemeMode, actualThemeColors, getVuetifyThemeLabel } from '~~/vuetify.config'
+
+const fallbackColor: ActualThemeColor = 'purple'
 
 export const useThemeStore = defineStore('theme', () => {
   const preferredColorScheme = usePreferredColorScheme()
@@ -8,16 +15,16 @@ export const useThemeStore = defineStore('theme', () => {
 
   // FIXME: useLocalStorage fallbacks to default value when page is reloaded
   //  maybe try `pinia-plugin-persistedstate` package instead
-  const localStorageThemeMode = useLocalStorage<ThemeMode>('theme.mode', ThemeMode.system)
+  const localStorageThemeMode = useLocalStorage<ThemeModeValue>('theme.mode', ThemeMode.System)
   const localStorageThemeColor = useLocalStorage<ThemeColor>('theme.color', 'random')
 
-  const mode = ref<ThemeMode>(ThemeMode.system)
+  const mode = ref<ThemeModeValue>(ThemeMode.System)
   const color = ref<ThemeColor>('random')
-  const randomColor = ref<ActualThemeColor>('purple')
+  const randomColor = ref<ActualThemeColor>(fallbackColor)
 
   const currentMode = computed<ActualThemeMode>(() => {
-    if (mode.value === ThemeMode.system) {
-      return preferredColorScheme.value === 'dark' ? ThemeMode.dark : ThemeMode.light
+    if (mode.value === ThemeMode.System) {
+      return preferredColorScheme.value === 'dark' ? ThemeMode.Dark : ThemeMode.Light
     }
     return mode.value
   })
@@ -41,15 +48,16 @@ export const useThemeStore = defineStore('theme', () => {
   const isInitialized = ref(false)
 
   function initialize() {
-    vTheme.global.name.value = vuetifyLabel.value
+    setRandomColor()
     mode.value = localStorageThemeMode.value
     color.value = localStorageThemeColor.value
+    vTheme.global.name.value = vuetifyLabel.value
     isInitialized.value = true
   }
 
   function setRandomColor() {
     const index = Math.floor(Math.random() * actualThemeColors.length)
-    randomColor.value = actualThemeColors[index] ?? 'purple'
+    randomColor.value = actualThemeColors[index] ?? fallbackColor
   }
 
   return {

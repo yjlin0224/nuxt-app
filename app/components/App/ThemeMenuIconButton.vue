@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type { ThemeColor } from '~~/vuetify.config'
+import type { ThemeColor, ThemeModeValue } from '~~/vuetify.config'
 
 import { ThemeMode, themeColors, themeModes } from '~~/vuetify.config'
 
-const themeModeIcons: Record<ThemeMode, string> = {
-  [ThemeMode.system]: 'mdi-theme-light-dark',
-  [ThemeMode.light]: 'mdi-weather-sunny',
-  [ThemeMode.dark]: 'mdi-weather-night',
+const themeModeIcons: Record<ThemeModeValue, string> = {
+  [ThemeMode.System]: 'mdi-theme-light-dark',
+  [ThemeMode.Light]: 'mdi-weather-sunny',
+  [ThemeMode.Dark]: 'mdi-weather-night',
 }
 
-const themeModeLabels: Record<ThemeMode, string> = {
-  [ThemeMode.system]: '系統',
-  [ThemeMode.light]: '亮',
-  [ThemeMode.dark]: '暗',
+const themeModeLabels: Record<ThemeModeValue, string> = {
+  [ThemeMode.System]: '系統',
+  [ThemeMode.Light]: '亮',
+  [ThemeMode.Dark]: '暗',
 }
 
 const themeColorLabels: Record<ThemeColor, string> = {
@@ -44,7 +44,7 @@ const buttonIcon = computed(() => themeModeIcons[themeStore.mode])
 const buttonAvatarColor = computed(
   () =>
     `${R.toKebabCase(themeStore.currentColor)}-${
-      themeStore.currentMode === ThemeMode.light ? 'lighten' : 'darken'
+      themeStore.currentMode === ThemeMode.Light ? 'lighten' : 'darken'
     }-3`,
 )
 

@@ -1,3 +1,4 @@
+import type { ValueOf } from 'type-fest'
 import type { ThemeDefinition } from 'vuetify'
 
 import { Blend, Scheme, TonalPalette } from '@material/material-color-utilities'
@@ -70,17 +71,18 @@ const zhHant = R.mergeDeep(zhHantPartial, {
   },
 })
 
-export enum ThemeMode {
-  system = 'system',
-  light = 'light',
-  dark = 'dark',
-}
-export type ActualThemeMode = Exclude<ThemeMode, ThemeMode.system>
+export const ThemeMode = {
+  System: 'system',
+  Light: 'light',
+  Dark: 'dark',
+} as const
+export type ThemeModeValue = ValueOf<typeof ThemeMode>
+export type ActualThemeMode = Exclude<ThemeModeValue, typeof ThemeMode.System>
 export type ActualThemeColor = keyof Omit<typeof colors, 'shades'>
 export type ThemeColor = ActualThemeColor | 'random'
 
-export const themeModes = [ThemeMode.system, ThemeMode.light, ThemeMode.dark]
-export const actualThemeModes = [ThemeMode.light, ThemeMode.dark]
+export const themeModes = [ThemeMode.System, ThemeMode.Light, ThemeMode.Dark]
+export const actualThemeModes = [ThemeMode.Light, ThemeMode.Dark]
 export const actualThemeColors: ActualThemeColor[] = R.pipe(colors, R.omit(['shades']), R.keys())
 export const themeColors: ThemeColor[] = [...actualThemeColors, 'random']
 
@@ -139,8 +141,8 @@ function generateVuetifyThemes(themeColor: ActualThemeColor): Partial<VuetifyThe
       [`on-${variantName}`]: variantTonalPalette.tone(20),
     }
     return {
-      [ThemeMode.light]: lightVariantColors,
-      [ThemeMode.dark]: darkVariantColors,
+      [ThemeMode.Light]: lightVariantColors,
+      [ThemeMode.Dark]: darkVariantColors,
     }
   }
 
@@ -199,7 +201,7 @@ function generateVuetifyThemes(themeColor: ActualThemeColor): Partial<VuetifyThe
       'on-info': harmonized.onInfo,
     }
     return {
-      dark: actualThemeMode === ThemeMode.dark,
+      dark: actualThemeMode === ThemeMode.Dark,
       colors: R.mapValues(colorArgbValues, convertColorArgbValueToRgbCode),
     }
   }
@@ -207,12 +209,12 @@ function generateVuetifyThemes(themeColor: ActualThemeColor): Partial<VuetifyThe
   const colorRgbCode = colors[themeColor].base as ColorRgbCode
   const colorArgbValue = convertColorRgbCodeToArgbValue(colorRgbCode)
   return {
-    [getVuetifyThemeLabel(ThemeMode.light, themeColor)]: generateVuetifyTheme(
-      ThemeMode.light,
+    [getVuetifyThemeLabel(ThemeMode.Light, themeColor)]: generateVuetifyTheme(
+      ThemeMode.Light,
       colorArgbValue,
     ),
-    [getVuetifyThemeLabel(ThemeMode.dark, themeColor)]: generateVuetifyTheme(
-      ThemeMode.dark,
+    [getVuetifyThemeLabel(ThemeMode.Dark, themeColor)]: generateVuetifyTheme(
+      ThemeMode.Dark,
       colorArgbValue,
     ),
   }
